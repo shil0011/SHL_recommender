@@ -51,7 +51,31 @@ class SHLAgent:
         intent = self._detect_intent(messages)
         
         if intent == "comparison":
-            return self.comparator.compare(messages, self.retriever)
+            # Extract assessment names from the last user message or context
+            # For this MVP, we'll use the retriever to find the assessments the user is talking about
+            query = messages[-1]["content"]
+            found = self.retriever.retrieve(query, k=2)
+            names = [f["name"] for f in found]
+            reply_data = self.comparator.compare(names)
+            
+            if isinstance(reply_data, str): # Error message
+                return {"reply": reply_data, "recommendations": [], "end_of_conversation": False}
+            
+            # Use LLM to format the comparison
+            context = "\n".join([f"- {c['name']}: {c['description']}" for c in reply_data])
+            prompt = f"The user wants to compare these assessments. Provide a concise comparison of their key differences.\n\nContext:\n{context}"
+            
+            try:
+                response = self.llm.invoke([HumanMessage(content=prompt)])
+                reply = response.content
+            except:
+                reply = f"Here is a comparison of {', '.join(names)}..."
+
+            return {
+                "reply": reply,
+                "recommendations": reply_data,
+                "end_of_conversation": False
+            }
         elif intent == "refusal":
             return {
                 "reply": "I'm sorry, but I can only provide information about SHL assessments and talent solutions.",
