@@ -30,6 +30,13 @@ class SHLGuardrails:
 
         return True, None
 
+    def is_safe(self, text):
+        """
+        Boolean check for simpler logic in the agent.
+        """
+        is_safe, _ = self.check_input(text)
+        return is_safe
+
     def is_on_topic(self, text):
         topic_keywords = ["hiring", "assessment", "test", "recruit", "candidate", "role", "skill", "shl", "opq", "verify"]
         text_lower = text.lower()
