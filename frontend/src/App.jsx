@@ -26,23 +26,23 @@ function App() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('http://localhost:8000/chat', {
+      const response = await fetch('https://shlrecommender-production.up.railway.app/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ messages: newMessages })
       });
 
       const data = await response.json();
-      setMessages([...newMessages, { 
-        role: 'assistant', 
-        content: data.reply, 
-        recommendations: data.recommendations 
+      setMessages([...newMessages, {
+        role: 'assistant',
+        content: data.reply,
+        recommendations: data.recommendations
       }]);
     } catch (error) {
       console.error("Error calling API:", error);
-      setMessages([...newMessages, { 
-        role: 'assistant', 
-        content: "I'm sorry, I encountered an error connecting to the server. Please make sure the backend is running on port 8000." 
+      setMessages([...newMessages, {
+        role: 'assistant',
+        content: "I'm sorry, I encountered an error connecting to the server. Please make sure the backend is running on port 8000."
       }]);
     } finally {
       setIsLoading(false);
@@ -60,8 +60,8 @@ function App() {
           </div>
         </div>
         <div className="status-badge" style={{ color: 'var(--success)', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-           <span style={{ width: '8px', height: '8px', background: 'var(--success)', borderRadius: '50%' }}></span>
-           System Active
+          <span style={{ width: '8px', height: '8px', background: 'var(--success)', borderRadius: '50%' }}></span>
+          System Active
         </div>
       </header>
 
@@ -95,9 +95,9 @@ function App() {
       </main>
 
       <div className="input-area">
-        <input 
-          type="text" 
-          placeholder="Ask about assessments for a Java Developer, Sales Manager..." 
+        <input
+          type="text"
+          placeholder="Ask about assessments for a Java Developer, Sales Manager..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyPress={(e) => e.key === 'Enter' && handleSend()}
